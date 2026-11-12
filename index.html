@@ -106,19 +106,27 @@ ul.pts li::marker{color:var(--muted)}
 
 /* diagram */
 .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
-.hexa{display:block;width:100%;min-width:740px;height:auto}
-.hx-app{fill:var(--app-t);stroke:var(--app);stroke-width:2}
-.hx-dom{fill:var(--domain-t);stroke:var(--domain);stroke-width:2}
-.hx-port{fill:var(--surface);stroke:var(--app);stroke-width:2}
-.hx-drv{fill:var(--pres-t);stroke:var(--pres);stroke-width:1.5}
-.hx-drn{fill:var(--infra-t);stroke:var(--infra);stroke-width:1.5}
-.edge{stroke:var(--muted);stroke-width:1.5;fill:none}
-.arrhead{fill:var(--muted)}
-.s-t{font:500 12px var(--font-body);fill:var(--ink)}
-.s-b{font:600 13px var(--font-display);fill:var(--ink)}
-.s-s{font:400 11px var(--font-body);fill:var(--muted)}
-.s-app{font:600 13px var(--font-display);fill:var(--app)}
-.s-dom{font:600 13px var(--font-display);fill:var(--domain)}
+.dgm{display:block;width:100%;min-width:960px;height:auto}
+.dg-title{font:600 11.5px var(--font-body);letter-spacing:.09em;text-transform:uppercase;fill:var(--muted)}
+.dg-note{font:400 11.5px var(--font-body);fill:var(--muted)}
+.dg-name{font:600 12.5px var(--font-body);fill:var(--ink)}
+.dg-sub{font:400 11.5px var(--font-body);fill:var(--muted)}
+.dg-lbl-app{font:600 14px var(--font-display);fill:var(--app)}
+.dg-lbl-dom{font:600 15px var(--font-display);fill:var(--domain)}
+.dg-hex-app{fill:var(--app-t);stroke:var(--app);stroke-width:2}
+.dg-hex-dom{fill:var(--domain-t);stroke:var(--domain);stroke-width:2}
+.dg-port{fill:var(--surface);stroke:var(--app);stroke-width:2}
+.dg-drv{fill:var(--pres-t);stroke:var(--pres);stroke-width:1.5}
+.dg-drn{fill:var(--infra-t);stroke:var(--infra);stroke-width:1.5}
+.dg-out{fill:var(--surface);stroke:var(--muted);stroke-width:1.5}
+.dg-opt{stroke-dasharray:5 4}
+.dg-link{stroke:var(--muted);stroke-width:1.5;fill:none}
+.dg-dep{stroke:var(--ink);stroke-width:1.6;fill:none}
+.dg-head{fill:var(--ink)}
+.pathcap{font:600 .72rem var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 .6rem}
+.path{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .5rem}
+.path .arr{color:var(--muted)}
+.pathnote{color:var(--muted);max-width:68ch;margin:.9rem 0 0}
 .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:1rem;margin:1.5rem 0 0}
 .defs>div{min-width:0;border-top:2px solid var(--c);padding-top:.6rem}
 .defs h3{font-size:1rem;margin:0 0 .3rem;color:var(--c)}
@@ -182,6 +190,29 @@ details>*:not(summary){margin-top:.7rem;max-width:68ch}
 details .code{max-width:none}
 
 @media (prefers-reduced-motion:no-preference){.stepbtn,.btn,.jump a{transition:background .15s,border-color .15s}}
+
+/* driving and driven */
+.sub{margin:2.25rem 0 .75rem}
+.side{border-color:var(--c)}
+.facts{margin:1rem 0 0;display:flex;flex-direction:column;gap:.75rem}
+.facts>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:.75rem}
+.facts dt{font:600 .7rem var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:.3rem}
+.facts dd{margin:0;min-width:0}
+@media (max-width:520px){.facts>div{grid-template-columns:minmax(0,1fr);gap:.1rem}}
+th.l-p,th.l-i{color:var(--c)}
+td.rowh{font-weight:600;white-space:nowrap}
+.quiz{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.qrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem 1rem;align-items:center;padding:.8rem 1rem;border-top:1px solid var(--line)}
+.qrow:first-child{border-top:0}
+.qname{min-width:0}
+.qbtns{display:flex;gap:.4rem}
+.qbtns .btn{padding:.3rem .85rem;font-size:.85rem}
+.qbtns .btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.qres{grid-column:1/-1;margin:0;font-size:.9rem;color:var(--muted)}
+.qres.ok::before{content:"Correct. ";color:var(--good);font-weight:600}
+.qres.ko::before{content:"Not quite. ";color:var(--bad);font-weight:600}
+.qscore{color:var(--muted);font-size:.9rem;margin:.75rem 0 0}
+@media (max-width:560px){.qrow{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <div class="wrap">
@@ -200,6 +231,7 @@ details .code{max-width:none}
   <nav class="jump" aria-label="Sections">
     <a href="#problem">The problem</a>
     <a href="#idea">The idea</a>
+    <a href="#sides">Driving and driven</a>
     <a href="#layers">Layers</a>
     <a href="#folders">Folders</a>
     <a href="#journey">One request, file by file</a>
@@ -240,54 +272,185 @@ details .code{max-width:none}
 
 <section id="idea">
   <h2>The idea in one picture</h2>
-  <p class="lead">Put the business in the middle. Everything that talks to the outside world plugs into the edge through an interface. The pattern is also called ports and adapters.</p>
+  <p class="lead">Put the business in the middle. Everything that talks to the outside world plugs into the edge through an interface. The pattern is also called ports and adapters. Here it is with the real names from the user module.</p>
   <div class="scroll">
-    <svg class="hexa" viewBox="0 0 820 380" role="img" aria-label="A hexagon containing the application and domain. Driving adapters on the left call the use case port. Driven adapters on the right implement the repository and hasher ports.">
+    <svg class="dgm" viewBox="0 0 1160 500" role="img" aria-labelledby="dgm-t dgm-d">
+      <title id="dgm-t">Hexagonal architecture applied to the user module</title>
+      <desc id="dgm-d">A hexagon holds the application and, inside it, the domain. On the left, a UserController, an event consumer and a CLI command each depend on the CreateUserUseCase port. On the right, PrismaUserRepository and InMemoryRepository implement the UserRepository port and BcryptPasswordHasher implements the PasswordHasher port. Outside, a browser, a queue and a terminal feed the left adapters, and Postgres, memory and the bcrypt package sit behind the right adapters.</desc>
       <defs>
-        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="arrhead" d="M0 0L10 5L0 10z"/></marker>
+        <marker id="dg-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="dg-head" d="M0 0L10 5L0 10z"/></marker>
       </defs>
-      <polygon class="hx-app" points="550,190 480,311 340,311 270,190 340,69 480,69"/>
-      <polygon class="hx-dom" points="480,190 445,250.6 375,250.6 340,190 375,129.4 445,129.4"/>
-      <text class="s-app" x="410" y="102" text-anchor="middle">Application · use cases</text>
-      <text class="s-dom" x="410" y="186" text-anchor="middle">Domain</text>
-      <text class="s-s" x="410" y="204" text-anchor="middle">entities</text>
-      <text class="s-s" x="410" y="219" text-anchor="middle">value objects</text>
-      <text class="s-s" x="410" y="332" text-anchor="middle">Knows nothing about HTTP, Postgres or bcrypt</text>
 
-      <text class="s-b" x="66" y="52" text-anchor="middle">Driving side</text>
-      <text class="s-s" x="66" y="68" text-anchor="middle">who calls the app</text>
-      <rect class="hx-drv" x="10" y="90" width="112" height="40" rx="4"/><text class="s-t" x="66" y="115" text-anchor="middle">HTTP controller</text>
-      <rect class="hx-drv" x="10" y="170" width="112" height="40" rx="4"/><text class="s-t" x="66" y="195" text-anchor="middle">CLI command</text>
-      <rect class="hx-drv" x="10" y="250" width="112" height="40" rx="4"/><text class="s-t" x="66" y="275" text-anchor="middle">Unit test</text>
-      <line class="edge" x1="122" y1="112" x2="188" y2="182" marker-end="url(#arr)"/>
-      <line class="edge" x1="122" y1="190" x2="188" y2="190" marker-end="url(#arr)"/>
-      <line class="edge" x1="122" y1="268" x2="188" y2="198" marker-end="url(#arr)"/>
+      <text class="dg-title" x="58" y="26" text-anchor="middle">Outside</text>
+      <text class="dg-title" x="218" y="26" text-anchor="middle">Driving adapters</text>
+      <text class="dg-note" x="218" y="43" text-anchor="middle">they call the app</text>
+      <text class="dg-title" x="577.5" y="26" text-anchor="middle">The core</text>
+      <text class="dg-note" x="577.5" y="43" text-anchor="middle">ports sit on its edge</text>
+      <text class="dg-title" x="937" y="26" text-anchor="middle">Driven adapters</text>
+      <text class="dg-note" x="937" y="43" text-anchor="middle">the app calls them</text>
+      <text class="dg-title" x="1097" y="26" text-anchor="middle">Outside</text>
 
-      <rect class="hx-port" x="190" y="176" width="130" height="28" rx="14"/>
-      <text class="s-t" x="255" y="194" text-anchor="middle">CreateUserUseCase</text>
+      <polygon class="dg-hex-app" points="577.5,72 742,167 742,357 577.5,452 413,357 413,167"/>
+      <polygon class="dg-hex-dom" points="577.5,190 639.9,226 639.9,298 577.5,334 515.1,298 515.1,226"/>
+      <text class="dg-lbl-app" x="577.5" y="120" text-anchor="middle">Application</text>
+      <text class="dg-note" x="577.5" y="137" text-anchor="middle">use cases and ports</text>
+      <text class="dg-lbl-dom" x="577.5" y="256" text-anchor="middle">Domain</text>
+      <text class="dg-note" x="577.5" y="274" text-anchor="middle">entities and</text>
+      <text class="dg-note" x="577.5" y="289" text-anchor="middle">value objects</text>
+      <text class="dg-note" x="577.5" y="394" text-anchor="middle">Knows nothing about</text>
+      <text class="dg-note" x="577.5" y="409" text-anchor="middle">Nest, Prisma or HTTP</text>
 
-      <rect class="hx-port" x="520" y="146" width="112" height="28" rx="14"/>
-      <text class="s-t" x="576" y="164" text-anchor="middle">UserRepository</text>
-      <rect class="hx-port" x="520" y="206" width="112" height="28" rx="14"/>
-      <text class="s-t" x="576" y="224" text-anchor="middle">PasswordHasher</text>
+      <!-- left: outside, adapters -->
+      <rect class="dg-out dg-opt" x="8" y="166" width="100" height="48" rx="4"/>
+      <text class="dg-name" x="58" y="187" text-anchor="middle">Queue</text>
+      <text class="dg-sub" x="58" y="203" text-anchor="middle">message broker</text>
+      <rect class="dg-out" x="8" y="238" width="100" height="48" rx="4"/>
+      <text class="dg-name" x="58" y="259" text-anchor="middle">Browser</text>
+      <text class="dg-sub" x="58" y="275" text-anchor="middle">or mobile app</text>
+      <rect class="dg-out dg-opt" x="8" y="310" width="100" height="48" rx="4"/>
+      <text class="dg-name" x="58" y="331" text-anchor="middle">Terminal</text>
+      <text class="dg-sub" x="58" y="347" text-anchor="middle">a shell command</text>
 
-      <text class="s-b" x="754" y="100" text-anchor="middle">Driven side</text>
-      <text class="s-s" x="754" y="116" text-anchor="middle">what the app calls</text>
-      <rect class="hx-drn" x="698" y="140" width="112" height="40" rx="4"/><text class="s-t" x="754" y="165" text-anchor="middle">Prisma repository</text>
-      <rect class="hx-drn" x="698" y="200" width="112" height="40" rx="4"/><text class="s-t" x="754" y="225" text-anchor="middle">bcrypt hasher</text>
-      <line class="edge" x1="698" y1="160" x2="635" y2="160" marker-end="url(#arr)"/>
-      <line class="edge" x1="698" y1="220" x2="635" y2="220" marker-end="url(#arr)"/>
-      <text class="s-s" x="666" y="190" text-anchor="middle">implements</text>
+      <line class="dg-link dg-opt" x1="108" y1="190" x2="138" y2="190"/>
+      <line class="dg-link" x1="108" y1="262" x2="138" y2="262"/>
+      <line class="dg-link dg-opt" x1="108" y1="334" x2="138" y2="334"/>
 
-      <text class="s-s" x="410" y="360" text-anchor="middle">Arrows show who depends on whom. Every arrow points inward.</text>
+      <rect class="dg-drv dg-opt" x="138" y="166" width="160" height="48" rx="4"/>
+      <text class="dg-name" x="218" y="187" text-anchor="middle">EventConsumer</text>
+      <text class="dg-sub" x="218" y="203" text-anchor="middle">queue adapter</text>
+      <rect class="dg-drv" x="138" y="238" width="160" height="48" rx="4"/>
+      <text class="dg-name" x="218" y="259" text-anchor="middle">UserController</text>
+      <text class="dg-sub" x="218" y="275" text-anchor="middle">HTTP adapter</text>
+      <rect class="dg-drv dg-opt" x="138" y="310" width="160" height="48" rx="4"/>
+      <text class="dg-name" x="218" y="331" text-anchor="middle">CliCommand</text>
+      <text class="dg-sub" x="218" y="347" text-anchor="middle">CLI adapter</text>
+
+      <path class="dg-dep dg-opt" d="M298 190 L341.3 253" marker-end="url(#dg-arr)"/>
+      <path class="dg-dep" d="M298 262 L337.5 262" marker-end="url(#dg-arr)"/>
+      <path class="dg-dep dg-opt" d="M298 334 L341.3 271" marker-end="url(#dg-arr)"/>
+
+      <rect class="dg-port" x="338" y="248" width="150" height="28" rx="14"/>
+      <text class="dg-name" x="413" y="266.5" text-anchor="middle">CreateUserUseCase</text>
+      <text class="dg-note" x="406" y="296" text-anchor="end">driving port</text>
+
+      <!-- right: ports, adapters, outside -->
+      <rect class="dg-port" x="667" y="206" width="150" height="28" rx="14"/>
+      <text class="dg-name" x="742" y="224.5" text-anchor="middle">UserRepository</text>
+      <rect class="dg-port" x="667" y="306" width="150" height="28" rx="14"/>
+      <text class="dg-name" x="742" y="324.5" text-anchor="middle">PasswordHasher</text>
+      <text class="dg-note" x="749" y="198">driven ports</text>
+
+      <path class="dg-dep" d="M857 190 L816 214" marker-end="url(#dg-arr)"/>
+      <path class="dg-dep dg-opt" d="M857 250 L816 226" marker-end="url(#dg-arr)"/>
+      <path class="dg-dep" d="M857 320 L818 320" marker-end="url(#dg-arr)"/>
+
+      <rect class="dg-drn" x="857" y="166" width="160" height="48" rx="4"/>
+      <text class="dg-name" x="937" y="187" text-anchor="middle">PrismaUserRepository</text>
+      <text class="dg-sub" x="937" y="203" text-anchor="middle">persistence adapter</text>
+      <rect class="dg-drn dg-opt" x="857" y="226" width="160" height="48" rx="4"/>
+      <text class="dg-name" x="937" y="247" text-anchor="middle">InMemoryRepository</text>
+      <text class="dg-sub" x="937" y="263" text-anchor="middle">test adapter</text>
+      <rect class="dg-drn" x="857" y="296" width="160" height="48" rx="4"/>
+      <text class="dg-name" x="937" y="317" text-anchor="middle">BcryptPasswordHasher</text>
+      <text class="dg-sub" x="937" y="333" text-anchor="middle">security adapter</text>
+
+      <line class="dg-link" x1="1017" y1="190" x2="1047" y2="190"/>
+      <line class="dg-link dg-opt" x1="1017" y1="250" x2="1047" y2="250"/>
+      <line class="dg-link" x1="1017" y1="320" x2="1047" y2="320"/>
+
+      <rect class="dg-out" x="1047" y="166" width="100" height="48" rx="4"/>
+      <text class="dg-name" x="1097" y="187" text-anchor="middle">Postgres</text>
+      <text class="dg-sub" x="1097" y="203" text-anchor="middle">the database</text>
+      <rect class="dg-out dg-opt" x="1047" y="226" width="100" height="48" rx="4"/>
+      <text class="dg-name" x="1097" y="247" text-anchor="middle">Memory</text>
+      <text class="dg-sub" x="1097" y="263" text-anchor="middle">a plain array</text>
+      <rect class="dg-out" x="1047" y="296" width="100" height="48" rx="4"/>
+      <text class="dg-name" x="1097" y="317" text-anchor="middle">bcrypt</text>
+      <text class="dg-sub" x="1097" y="333" text-anchor="middle">npm package</text>
+
+      <!-- legend -->
+      <rect class="dg-out" x="20" y="473" width="16" height="11" rx="2"/>
+      <text class="dg-note" x="44" y="483">Built in the user module</text>
+      <rect class="dg-out dg-opt" x="260" y="473" width="16" height="11" rx="2"/>
+      <text class="dg-note" x="284" y="483">Could be added later without touching the core</text>
+      <path class="dg-dep" d="M650 479 L680 479" marker-end="url(#dg-arr)"/>
+      <text class="dg-note" x="690" y="483">Source code dependency. It always points inward.</text>
     </svg>
   </div>
+  <p class="pathcap">The runtime path of POST /users</p>
+  <div class="path">
+    <span class="chip l-m">Browser</span><span class="arr" aria-hidden="true">→</span>
+    <span class="chip l-p">UserController</span><span class="arr" aria-hidden="true">→</span>
+    <span class="chip l-a">CreateUserUseCase</span><span class="arr" aria-hidden="true">→</span>
+    <span class="chip l-a">UserRepository</span><span class="arr" aria-hidden="true">→</span>
+    <span class="chip l-i">PrismaUserRepository</span><span class="arr" aria-hidden="true">→</span>
+    <span class="chip l-m">Postgres</span>
+  </div>
+  <p class="pathnote">Read left to right, the call leaves the core through the right side. The imports do not follow it. <code>PrismaUserRepository</code> imports and implements <code>UserRepository</code>, so in the source code that arrow points back in. That reversal is the trick the whole pattern relies on, and the next section looks at the two sides separately.</p>
   <div class="defs">
     <div class="l-d"><h3>Core</h3><p>Entities, value objects and use cases in plain TypeScript. It would still compile if you deleted Nest, Prisma and Express.</p></div>
     <div class="l-a"><h3>Port</h3><p>An interface the core owns. A driving port is what outsiders call, such as a use case. A driven port is what the core needs, such as <code>UserRepository</code>.</p></div>
     <div class="l-i"><h3>Adapter</h3><p>Code that plugs into a port. A controller calls a use case. <code>PrismaUserRepository</code> implements <code>UserRepository</code>. Adapters can be swapped.</p></div>
     <div class="l-m"><h3>Dependency rule</h3><p>Source code imports only point inward. The core never imports an adapter, even though at runtime it calls one.</p></div>
   </div>
+</section>
+
+<section id="sides">
+  <h2>Driving and driven</h2>
+  <p class="lead">The two sides of the hexagon are not mirror images. On one side something calls the app. On the other side the app calls something. They are also named primary and secondary, or inbound and outbound.</p>
+  <div class="cols">
+    <div class="card side l-p">
+      <h3><span class="chip">Driving</span> Someone calls the app</h3>
+      <p>Something outside decides it is time to act and calls the application. The application never starts these conversations. It only answers them.</p>
+      <dl class="facts">
+        <div><dt>Also called</dt><dd>Primary or inbound. The left side of the picture.</dd></div>
+        <div><dt>Examples</dt><dd>HTTP controller, GraphQL resolver, CLI command, queue consumer, cron job, a test</dd></div>
+        <div><dt>The port</dt><dd>The use case itself. Its <code>execute(command)</code> method is the front door.</dd></div>
+        <div><dt>The adapter</dt><dd>Translates the outside format into a command and calls the port. Keep it thin.</dd></div>
+        <div><dt>In our module</dt><dd><code>user.controller.ts</code>, <code>create-user.dto.ts</code>, <code>create-user.command.ts</code></dd></div>
+      </dl>
+    </div>
+    <div class="card side l-i">
+      <h3><span class="chip">Driven</span> The app calls out</h3>
+      <p>To do its job the application needs something from the outside: storage, hashing, email, the clock. It asks through an interface and does not care who answers.</p>
+      <dl class="facts">
+        <div><dt>Also called</dt><dd>Secondary or outbound. The right side of the picture.</dd></div>
+        <div><dt>Examples</dt><dd>Database repository, password hasher, email sender, payment gateway, clock, event bus</dd></div>
+        <div><dt>The port</dt><dd>An interface the application declares, named after the need: <code>UserRepository</code>, not <code>PrismaClient</code>.</dd></div>
+        <div><dt>The adapter</dt><dd>Implements the port with a real technology. It can be swapped, and tests replace it with a fake.</dd></div>
+        <div><dt>In our module</dt><dd><code>user.repository.ts</code>, <code>password-hasher.ts</code>, <code>user.repository.impl.ts</code>, <code>bcrypt-password-hasher.ts</code></dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <h3 class="sub">Side by side</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th></th><th class="l-p">Driving</th><th class="l-i">Driven</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">Who starts the call</td><td>The outside world</td><td>The application</td></tr>
+        <tr><td class="rowh">The port is</td><td>A use case, a class with <code>execute()</code></td><td>An interface the app declares, such as <code>UserRepository</code></td></tr>
+        <tr><td class="rowh">Who implements the port</td><td>The application</td><td>The adapter</td></tr>
+        <tr><td class="rowh">Runtime call</td><td>Adapter calls the app</td><td>App calls the adapter</td></tr>
+        <tr><td class="rowh">Source import</td><td>Adapter imports the port. Same direction as the call.</td><td>Adapter imports the port. Opposite to the call.</td></tr>
+        <tr><td class="rowh">Typical adapters</td><td>Controller, CLI, queue consumer, cron job, test</td><td>Database, hasher, mailer, payment gateway, clock</td></tr>
+        <tr><td class="rowh">In tests</td><td>Call the use case directly</td><td>Replace with an in-memory fake</td></tr>
+        <tr><td class="rowh">Swapping it means</td><td>Adding a new way in, such as GraphQL next to REST</td><td>Changing the technology, such as Prisma to another ORM</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="watch" style="margin-top:1.25rem"><strong>The one idea to take away.</strong> On the driving side the call and the import point the same way, so nothing special is needed. On the driven side they point opposite ways. The interface lives in the application and the adapter imports it, which turns the import around. That reversal is called dependency inversion.</p>
+
+  <h3 class="sub">The same two directions in code</h3>
+  <div class="pair">
+    <figure class="file l-p"><figcaption>Driving: the adapter calls the port</figcaption><pre data-code="drivingcode"></pre></figure>
+    <figure class="file l-i"><figcaption>Driven: the app calls the port, the adapter implements it</figcaption><pre data-code="drivencode"></pre></figure>
+  </div>
+
+  <h3 class="sub">Try it: which side is it?</h3>
+  <p class="lead" style="margin-bottom:1rem">Pick a side for each example. The reason appears after each answer.</p>
+  <div class="quiz" id="sidequiz"></div>
+  <p class="qscore" id="qscore" aria-live="polite">No answers yet.</p>
 </section>
 
 <section id="layers">
@@ -742,6 +905,41 @@ it('rejects a second user with the same email', async () => {
     useCase.execute({ username: 'sara2', email: 'SARA@example.com', password: 'correct-horse-9' }),
   ).rejects.toBeInstanceOf(EmailAlreadyUsedError);
 });`,
+    drivingcode: String.raw`// application/use-cases/create-user.use-case.ts
+// The port. It is the use case itself.
+export class CreateUserUseCase {
+  async execute(cmd: CreateUserCommand): Promise<UserView> {
+    // ...
+  }
+}
+
+// presentation/user.controller.ts
+// The adapter. It imports the port and calls it.
+@Controller('users')
+export class UserController {
+  constructor(private readonly createUser: CreateUserUseCase) {}
+
+  @Post()
+  create(@Body() dto: CreateUserDto) {
+    return this.createUser.execute({ ...dto });
+  }
+}`,
+    drivencode: String.raw`// application/ports/user.repository.ts
+// The port. The application declares what it needs.
+export interface UserRepository {
+  findByEmail(email: Email): Promise<User | null>;
+  save(user: User): Promise<User>;
+}
+
+// application/use-cases/create-user.use-case.ts
+// The application calls out through the port.
+const taken = await this.users.findByEmail(email);
+
+// infrastructure/persistence/user.repository.impl.ts
+// The adapter imports the port and implements it.
+export class PrismaUserRepository implements UserRepository {
+  // ...
+}`,
     lint: String.raw`// eslint.config.js: one block per layer
 {
   files: ['src/**/domain/**'],
@@ -905,6 +1103,60 @@ it('rejects a second user with the same email', async () => {
       var t = document.querySelector(a.getAttribute('href'));
       if (t) { e.preventDefault(); t.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' }); }
     });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var ITEMS = [
+    { n: 'A controller that handles POST /users', a: 'driving', w: 'A browser decides to call the app. The app never asked for it.' },
+    { n: 'PrismaUserRepository', a: 'driven', w: 'The app needs to store a user, so it calls out through the UserRepository port and Prisma answers.' },
+    { n: 'A cron job that sends a reminder every morning at 8', a: 'driving', w: 'The scheduler calls the app. It is another way in, like HTTP.' },
+    { n: 'An email sender that mails a welcome message', a: 'driven', w: 'The app asks the outside to send something. It would declare a MailSender port and an adapter would implement it.' },
+    { n: 'A GraphQL resolver', a: 'driving', w: 'Same job as a controller with another protocol. It translates the request and calls a use case.' },
+    { n: 'A Redis cache the use case reads before the database', a: 'driven', w: 'The app calls it, so it needs a port. The use case should not know the cache is Redis.' },
+    { n: 'A Jest test that calls useCase.execute()', a: 'driving', w: 'The test is the caller. It plays the same role as a controller.' },
+    { n: 'The current time, behind a Clock port', a: 'driven', w: 'The app asks the outside world for something. A fake clock makes time-dependent tests predictable.' }
+  ];
+  var box = document.getElementById('sidequiz');
+  var score = document.getElementById('qscore');
+  var state = {};
+
+  function refresh() {
+    var answered = 0, right = 0;
+    ITEMS.forEach(function (it, i) {
+      if (state[i]) { answered++; if (state[i] === it.a) right++; }
+    });
+    score.textContent = answered === 0
+      ? 'No answers yet.'
+      : answered + ' of ' + ITEMS.length + ' answered, ' + right + ' correct.';
+  }
+
+  ITEMS.forEach(function (it, i) {
+    var row = document.createElement('div');
+    row.className = 'qrow';
+    row.innerHTML =
+      '<div class="qname">' + it.n.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</div>' +
+      '<div class="qbtns" role="group" aria-label="Choose a side">' +
+      '<button type="button" class="btn" data-v="driving" aria-pressed="false">Driving</button>' +
+      '<button type="button" class="btn" data-v="driven" aria-pressed="false">Driven</button></div>' +
+      '<p class="qres" hidden></p>';
+    var res = row.querySelector('.qres');
+    row.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = b.getAttribute('data-v');
+        state[i] = v;
+        row.querySelectorAll('button').forEach(function (x) {
+          x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+        });
+        res.hidden = false;
+        res.className = 'qres ' + (v === it.a ? 'ok' : 'ko');
+        res.textContent = 'It is ' + it.a + '. ' + it.w;
+        refresh();
+      });
+    });
+    box.appendChild(row);
   });
 })();
 </script>
